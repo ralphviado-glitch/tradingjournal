@@ -51,6 +51,9 @@ export default function Login() {
           />
           <button type="submit">Login</button>
         </form>
+        <p>
+        <strong>Demo Account - Email:</strong>   sample@gmail.com | <strong>password: </strong>Sample1234!
+        </p>
       </div>
     </div>
   );
