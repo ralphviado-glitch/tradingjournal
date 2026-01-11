@@ -35,7 +35,7 @@ export default function KPICards() {
       try {
         // Fetch performance
         const perfRes = await fetch(
-          "http://localhost:5000/api/trades/performance",
+          `${import.meta.env.VITE_API_URL}/api/trades/performance`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const perfData = await perfRes.json();
@@ -43,7 +43,7 @@ export default function KPICards() {
 
         // Fetch trades
         const tradesRes = await fetch(
-          "http://localhost:5000/api/trades",
+          `${import.meta.env.VITE_API_URL}/api/trades`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const trades = await tradesRes.json();

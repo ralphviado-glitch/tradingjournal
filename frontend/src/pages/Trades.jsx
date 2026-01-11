@@ -27,7 +27,7 @@ export default function TradePage() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/trades/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/trades/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

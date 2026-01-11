@@ -22,7 +22,6 @@ export default function AddTrade({ tradeToEdit, onTradeAdded }) {
       let pnlValue = side === "Long"
         ? (exitPrice - entryPrice) * positionSize
         : (entryPrice - exitPrice) * positionSize;
-
       pnlValue -= Number(fee);
 
       setFormData(prev => ({
@@ -47,12 +46,21 @@ export default function AddTrade({ tradeToEdit, onTradeAdded }) {
       return;
     }
 
+    // Construct API URL correctly
+    const baseURL = import.meta.env.VITE_API_URL;
+    if (!baseURL) {
+      alert("API URL not configured. Check your .env file.");
+      return;
+    }
+
     const url = tradeToEdit
-      ? `http://localhost:5000/api/trades/${tradeToEdit._id}`
-      : "http://localhost:5000/api/trades";
+      ? `${baseURL}/api/trades/${tradeToEdit._id}`
+      : `${baseURL}/api/trades`;
+
     const method = tradeToEdit ? "PUT" : "POST";
 
     try {
+      console.log("Sending request to:", url); // debug
       const res = await fetch(url, {
         method,
         headers: {
@@ -62,13 +70,23 @@ export default function AddTrade({ tradeToEdit, onTradeAdded }) {
         body: JSON.stringify(formData)
       });
 
-      if (!res.ok) throw new Error("Failed to save trade");
+      // Read text first to handle bad responses
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        console.error("Expected JSON, got:", text);
+        throw new Error("Server did not return JSON");
+      }
+
+      if (!res.ok) throw new Error(data.message || "Failed to save trade");
 
       alert(tradeToEdit ? "Trade updated!" : "Trade added!");
       onTradeAdded?.();
     } catch (err) {
       console.error(err);
-      alert("Error saving trade");
+      alert(err.message || "Error saving trade");
     }
   };
 
